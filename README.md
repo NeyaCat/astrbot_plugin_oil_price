@@ -1,5 +1,13 @@
 <div align="center">
-![:name](https://count.getloli.com/@astrbot_plugin_oil_price?name=astrbot_plugin_oil_price&theme=original-new&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
+
+![Moe Counter](https://count.getloli.com/@astrbot_plugin_oil_price?theme=yousa-ling&padding=7&offset=0&align=top&scale=1&pixelated=1&darkmode=auto)
+
+---
+
+[![AstrBot](https://img.shields.io/badge/AstrBot-%E2%89%A54.9.2-6C43D6?style=flat-square)](https://github.com/AstrBotDevs/AstrBot)
+![version](https://img.shields.io/badge/version-2.9.0-blue?style=flat-square)
+![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white&style=flat-square)
+
 </div>
 
 # ⛽ astrbot_plugin_oil_price（全国油价）
@@ -253,6 +261,7 @@ curl -o oil.jpg "http://127.0.0.1:9852/oil?type=province&province=北京&grade=9
 
 - 修改后在 WebUI 点击「重载插件」生效，观察控制台 `[oil_price]` 前缀日志。
 - 提交前建议跑 `ruff format` / `ruff check`；网络请求统一使用 `httpx`（异步），不使用 `requests`。
+- 发版时版本号需同步：`metadata.yaml` / `main.py` / 测试桩，以及 **README 顶部 `version` 徽章**（shields 静态徽章不会自己读版本，忘了改就会停在旧号）。
 
 ## 🤝 数据与素材来源
 

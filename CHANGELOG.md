@@ -1,5 +1,25 @@
 # Changelog
 
+## 2.9.1
+
+**整改上架审核指出的日志来源问题。**
+
+`core/oil_fetch.py` 原先自己造了一个日志记录器：
+
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+```
+
+上架规则要求日志记录器**必须且只能从 `astrbot.api` 导入**，因此改为
+`from astrbot.api import logger` —— 该文件里唯一一处 `logger.warning`（丢弃上游
+时间戳异常的行）行为不变。至此插件内三个会写日志的模块（`main.py`、
+`core/oil_http.py`、`core/oil_fetch.py`）全部统一走 AstrBot 的 logger，日志带
+`[oil_price]` 前缀进入 AstrBot 日志体系。
+
+无功能变更，不涉及任何配置项。
+
 ## 2.9.0
 
 **网页查询界面记住上次的选择，下次打开直接回显。**

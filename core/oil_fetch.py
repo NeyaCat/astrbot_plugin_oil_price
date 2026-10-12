@@ -16,17 +16,15 @@ v2.1.0 移除了 appid + sign 模式：那套签名规则各家控制台给的�
 
 from __future__ import annotations
 
-import logging
-
 from datetime import date
 
 import httpx
 
+from astrbot.api import logger
+
 from .config import GRADE_FIELD, normalize_province, parse_price
 
 _BASE = "https://route.showapi.com"
-
-logger = logging.getLogger(__name__)
 
 
 class ShowApiError(RuntimeError):

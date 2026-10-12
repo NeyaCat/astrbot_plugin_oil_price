@@ -159,7 +159,7 @@ def _data_root(plugin_name: str) -> Path:
     PLUGIN_NAME,
     "NeyaCat",
     "全国油价查询与计算（整体播报图 / 单省单号图 / 加油计算 / 常用地区与油号记忆 / 定时推送 / HTTP 取图接口）",
-    "2.9.1",
+    "2.9.2",
 )
 class OilPricePlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):

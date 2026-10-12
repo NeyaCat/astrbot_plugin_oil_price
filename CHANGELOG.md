@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.9.2
+
+**插件市场页瘦身 + 图标。**
+
+- `desc` 从 20 多行压到 6 行 —— 市场页上的「描述」是要一眼看完的简介，完整手册本来就在
+  README；`short_desc` 同步收成一句话（卡片优先显示它）。功能一条没删，只是不再往市场页堆。
+- 作者 / 仓库填真名：`author: NeyaCat`、`repo: https://github.com/NeyaCat/astrbot_plugin_oil_price`，
+  `main.py` 的 `@register` 同步 —— 此前两处都是 `YourName` 占位，市场页就照搬显示成了占位符。
+- 新增根目录 `logo.png`（256×256，1:1，琥珀油枪 + 墨蓝底）。⚠️ AstrBot 是
+  `os.path.join(plugin_dir_path, "logo.png")` —— **只认插件根目录的这个固定文件名**；
+  放 `assets/` 里、或只在 `metadata.yaml` 写 `logo:`，都不会让它显示出来。
+
+无功能变更，不涉及任何配置项。
+
 ## 2.9.1
 
 **整改上架审核指出的日志来源问题。**
@@ -17,16 +31,6 @@ logger = logging.getLogger(__name__)
 时间戳异常的行）行为不变。至此插件内三个会写日志的模块（`main.py`、
 `core/oil_http.py`、`core/oil_fetch.py`）全部统一走 AstrBot 的 logger，日志带
 `[oil_price]` 前缀进入 AstrBot 日志体系。
-
-**插件市场页瘦身 + 图标**
-
-- `desc` 从 20 多行压到 6 行 —— 市场页上的「描述」是要一眼看完的简介，完整手册本来就在
-  README；`short_desc` 同步收成一句话（卡片优先显示它）。功能一条没删，只是不再往市场页堆。
-- 作者 / 仓库填真名：`author: NeyaCat`、`repo: https://github.com/NeyaCat/astrbot_plugin_oil_price`，
-  `main.py` 的 `@register` 同步 —— 此前两处都是 `YourName` 占位，市场页就照搬显示成了占位符。
-- 新增根目录 `logo.png`（256×256，1:1，琥珀油枪 + 墨蓝底）。⚠️ AstrBot 是
-  `os.path.join(plugin_dir_path, "logo.png")` —— **只认插件根目录的这个固定文件名**；
-  放 `assets/` 里、或只在 `metadata.yaml` 写 `logo:`，都不会让它显示出来。
 
 无功能变更，不涉及任何配置项。
 

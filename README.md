@@ -5,7 +5,7 @@
 ---
 
 [![AstrBot](https://img.shields.io/badge/AstrBot-%E2%89%A54.9.2-6C43D6?style=flat-square)](https://github.com/AstrBotDevs/AstrBot)
-![version](https://img.shields.io/badge/version-2.9.1-blue?style=flat-square)
+![version](https://img.shields.io/badge/version-2.9.2-blue?style=flat-square)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white&style=flat-square)
 
 </div>

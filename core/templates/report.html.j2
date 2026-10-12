@@ -1,0 +1,53 @@
+<h1 class="section-title">整体播报</h1><p class="context">{{ sub }}</p>
+    <div class="note">{{ note }}</div>
+
+    {% if not has_data %}
+    <div class="empty">暂无数据<br>请先在插件页面点击「初始化历史数据」，或等待每日自动抓取。</div>
+    {% else %}
+    <!-- 第一块：当日挂牌价 -->
+    <div class="cards">
+      {% for card in grade_cards %}
+      <div class="card">
+        <div class="head">
+          <h2>{{ card.num }}<i>{{ card.unit }}</i></h2>
+          <span class="ch c2">今日价格</span>
+          <span class="ch c3">较上次调价</span>
+        </div>
+        {% for r in card.rows %}
+        <div class="row">
+          <div class="c1">{{ r.province }}</div>
+          <div class="c2">{{ r.price }}<span class="unit">元/升</span></div>
+          <div class="c3 {{ r.cls }}">{{ r.delta_label }}</div>
+        </div>
+        {% endfor %}
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- 第二块：历史区间最低价（与上一块口径不同，必须分开；逐省遍历展示） -->
+    <div class="sect">历史区间最低价 · 今年 / 当月 / 本周<span class="sect-hint">元/升 · 区间最低</span></div>
+    <div class="lowcards">
+      {% for lc in low_cards %}
+      <div class="lowcard">
+        <div class="lc-top">
+          <span class="lc-grade">{{ lc.label }}</span>
+        </div>
+        <div class="lc-head">
+          <span class="lc-c1">地区</span>
+          <span class="lc-cell">今年</span>
+          <span class="lc-cell">当月</span>
+          <span class="lc-cell">本周</span>
+        </div>
+        {% for r in lc.rows %}
+        <div class="lc-row">
+          <span class="lc-c1">{{ r.province }}</span>
+          {% for c in r.cells %}
+          <span class="lc-cell"><b class="lc-price">{{ c.price }}</b><i class="lc-date">{{ c.date_short }}</i></span>
+          {% endfor %}
+        </div>
+        {% endfor %}
+        {% if lc.note %}<div class="lc-note">{{ lc.note }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}

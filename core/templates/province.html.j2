@@ -1,0 +1,44 @@
+<h1 class="section-title">我的油价</h1><p class="context">{{ my.sub }}</p>
+    <div class="note">{{ my.note }}</div>
+
+    {% if not my.has_data %}
+    <div class="empty">暂无 {{ my.province }} {{ my.grade_label }} 的油价数据<br>请先在插件页面点击「初始化历史数据」，或等待每日自动抓取。</div>
+    {% else %}
+    <!-- 价格牌：图上唯一的今日挂牌价 -->
+    <div class="plate">
+      <div class="pp-label">{{ my.province }} · {{ my.grade_label }}</div>
+      <div class="pp-line">
+        <span class="pp-price">{{ my.price }}</span><span class="pp-unit">元/升</span>
+        {% if my.arrow and my.arrow != "—" %}
+        <span class="pp-delta {{ my.cls }}">{{ my.arrow }} {{ my.delta_text }}</span>
+        {% endif %}
+      </div>
+      {% if my.price_date %}<div class="pp-date">价格日期 {{ my.price_date }} · 更新于 {{ my.updated_at }}</div>{% endif %}
+    </div>
+
+    <div class="metrics">
+      {% for item in my.metrics %}
+      <div class="metric metric--{{ item.key }}">
+        <div class="name">{{ item.label }}</div>
+        <div class="right">
+          <span class="value {{ item.cls }}">{{ item.value }}</span>
+          {% if item.unit %}<span class="unit">{{ item.unit }}</span>{% endif %}
+          {% if item.note %}<div class="note">{{ item.note }}</div>{% endif %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    {% if my.advice %}
+    <div class="advice advice--{{ my.advice.phase }}">
+      <span class="advice-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="9" height="18" rx="2"/><path d="M6.6 7.6h3.8"/><path d="M13 10.2h2.4a2.1 2.1 0 0 1 2.1 2.1v5a1.6 1.6 0 0 0 3.2 0V9.9l-2.4-2.6"/></svg></span>
+      <span class="advice-body">
+        <b class="advice-title">{{ my.advice.title }}</b>
+        {% if my.advice.evidence %}<span class="advice-evidence">{{ my.advice.evidence }}</span>{% endif %}
+        {# 近几次调价的逐次涨跌明细（trend_text）：这张图的核心信息之一，不能省 #}
+        {% if my.advice.trend %}<span class="advice-trend">{{ my.advice.trend }}</span>{% endif %}
+        {% if my.advice.caveat %}<span class="advice-caveat">{{ my.advice.caveat }}</span>{% endif %}
+      </span>
+    </div>
+    {% endif %}
+    {% endif %}

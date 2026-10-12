@@ -1,0 +1,8 @@
+# 异步 HTTP 客户端（ShowAPI / 东方财富 datacenter）
+httpx>=0.27
+# Windows 上 zoneinfo 的时区数据库兜底（Linux/macOS 通常已内置）
+tzdata
+# 设置页上传背景：校验图片、处理方向并重新编码
+Pillow>=10.4
+# 说明：HTTP 取图接口（core/oil_http.py）使用 aiohttp，
+# 该库是 AstrBot 的运行时依赖，无需在此重复声明。

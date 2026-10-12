@@ -1,0 +1,127 @@
+/* 整体播报组件 · 画布 768 宽（v2.5.0 起，原 1080）。
+   两条换算纪律：
+     ① 几何（padding / gap / radius）按宽度比 768/1080≈0.711 收窄；
+     ② 字号**不跟着收** —— 大字（油号 40px、价格 44px、省份 26px）保持原值，
+        只为 <20px 的小字（表头、单位、区间日期/标注）抬到 20~21px 保底。
+   列宽（--col2-w/--col3-w/--lc-col-w）是**由文字实际宽度决定的**，不参与等比缩放：
+   卡内可用宽 = 768 − 2×40(deck) − 2×20(card) = 648，故 648 − 210 − 185 = 253 留给省份名。
+   小卡内可用宽 = 768 − 2×40 − 2×16 = 656，故 --lc-col-w 必须 ≤168 才给「地区」列留出位置。 */
+.content-report {     --cards-mt: 14px;  --card-gap: 9px;
+    --card-pt: 14px;   --card-pb: 12px;  --card-px: 20px;  --card-radius: 13px;
+    --head-num: 40px;  --head-unit: 20px; --head-pb: 7px;
+    --thead-fs: 21px;
+    --row-py: 9px;     --fs-label: 26px; --fs-price: 44px; --fs-unit: 20px; --fs-delta: 25px;
+    --col2-w: 210px;   --col3-w: 185px;
+    --sect-mt: 16px;   --fs-sect: 25px;
+    --s-gap: 9px;      --s-pt: 11px; --s-pb: 10px; --s-px: 16px; --s-radius: 11px;
+    --s-head-fs: 26px; --s-head-pb: 6px;
+    --s-row-py: 6px;   --s-fs-region: 24px; --s-fs-price: 36px; --s-fs-date: 20px; --s-fs-note: 20px;
+    --lc-col-w: 168px; --fs-next:29px; }
+
+.content-report .cards { margin-top: var(--cards-mt); display: flex; flex-direction: column; gap: var(--card-gap); }
+.content-report .card {
+    border-radius: var(--card-radius);
+    padding: var(--card-pt) var(--card-px) var(--card-pb);
+    background: var(--panel);
+    border: 1px solid var(--panel-bd);
+  }
+.content-report .card .head {
+    display: flex; align-items: baseline;
+    padding-bottom: var(--head-pb);
+    border-bottom: 2px solid var(--ink);
+  }
+.content-report .card .head h2 {
+    flex: 1; margin: 0; font-weight: 800; letter-spacing: -.5px; color: var(--ink);
+    font-size: var(--head-num); line-height: 1.05;
+  }
+.content-report .card .head h2 i {
+    font-style: normal; font-weight: 600;
+    font-size: var(--head-unit); letter-spacing: 1px;
+    color: var(--ink-2); margin-left: 3px;
+  }
+.content-report .card .head .ch {
+    font-size: var(--thead-fs); font-weight: 500; letter-spacing: .5px;
+    color: var(--ink-3); white-space: nowrap;
+  }
+.content-report .card .head .ch.c2 { width: var(--col2-w); text-align: right; }
+.content-report .card .head .ch.c3 { width: var(--col3-w); text-align: right; }
+.content-report .row {
+    display: flex; align-items: baseline;
+    padding: var(--row-py) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+.content-report .row:last-child { border-bottom: none; }
+.content-report .row .c1 { flex: 1; font-size: var(--fs-label); color: var(--ink-2); }
+.content-report .row .c2 {
+    width: var(--col2-w); text-align: right; white-space: nowrap;
+    font-size: var(--fs-price); font-weight: 800; color: var(--ink);
+    font-variant-numeric: tabular-nums; letter-spacing: -.5px;
+  }
+.content-report .row .c2 .unit {
+    font-size: var(--fs-unit); font-weight: 500; color: var(--ink-3);
+    margin-left: 4px; letter-spacing: 0;
+  }
+.content-report .row .c3 {
+    width: var(--col3-w); text-align: right; white-space: nowrap;
+    font-size: var(--fs-delta); font-weight: 700;
+    font-variant-numeric: tabular-nums;
+  }
+.content-report .up { color: var(--up); }
+.content-report .down { color: var(--down); }
+.content-report .flat { color: var(--flat); }
+.content-report .empty {
+    margin-top: var(--cards-mt);
+    padding: 24px 20px; border-radius: var(--card-radius);
+    background: var(--panel); border: 1px dashed var(--panel-bd);
+    text-align: center; color: var(--ink-3); font-size: 22px; line-height: 1.7;
+  }
+.content-report .sect {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-top: var(--sect-mt); margin-bottom: 9px;
+    font-size: var(--fs-sect); font-weight: 700; letter-spacing: 1px; color: var(--ink);
+  }
+.content-report .sect .sect-hint { font-size: var(--fs-note); font-weight: 500; color: var(--ink-3); }
+.content-report .lowcards { display: flex; flex-direction: column; gap: var(--s-gap); }
+.content-report .lowcard {
+    border-radius: var(--s-radius);
+    padding: var(--s-pt) var(--s-px) var(--s-pb);
+    background: var(--panel-2);
+    border: 1px solid var(--panel-2-bd);
+  }
+.content-report .lc-top { display: flex; align-items: baseline; justify-content: space-between; }
+.content-report .lc-grade {
+    font-size: var(--s-head-fs); font-weight: 800; letter-spacing: .5px;
+    color: var(--amber);
+  }
+.content-report .lc-head {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-head-pb) 0;
+    border-bottom: 1px solid var(--hair);
+    font-size: var(--s-fs-note); letter-spacing: .5px; color: var(--ink-3);
+  }
+.content-report .lc-head .lc-c1 { flex: 1; }
+.content-report .lc-head .lc-cell { width: var(--lc-col-w); text-align: right; }
+.content-report .lc-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-row-py) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+.content-report .lc-row:last-of-type { border-bottom: none; }
+.content-report .lc-row .lc-c1 { flex: 1; font-size: var(--s-fs-region); color: var(--ink-2); }
+.content-report .lc-row .lc-cell {
+    width: var(--lc-col-w);
+    display: flex; flex-direction: column; align-items: flex-end; line-height: 1.18;
+  }
+.content-report .lc-price {
+    font-style: normal; font-weight: 800;
+    font-size: var(--s-fs-price); color: var(--ink);
+    font-variant-numeric: tabular-nums; letter-spacing: -.3px;
+  }
+.content-report .lc-date {
+    font-style: normal; font-size: var(--s-fs-date); color: var(--ink-3);
+    font-variant-numeric: tabular-nums;
+  }
+.content-report .lc-note {
+    margin-top: 6px;
+    font-style: normal; font-size: var(--s-fs-note); color: var(--amber);
+  }

@@ -1,0 +1,79 @@
+/* 加油计算组件 · 画布 768 宽（v2.5.0 起，此前是 760px 时代的结算单尺度）。
+   换算纪律同 report.css：几何 ×0.711，字号只在 <20px 时抬到 20~22px 保底，
+   大数字（结果 84px / 单价 42px / 数量 39px）原样保留 —— 手机上按屏宽缩放后
+   这些数字正好落在舒适区。
+   ⚠️ 本文件继承 760px 时代的版式纪律：全文不写固定高度，一律用 border-top 与
+   padding 撑起来（full_page 自适应高度的前提）。注释里也不出现该 CSS 属性字面量。 */
+.content-calc .masthead { padding: 17px 0 13px; }
+.content-calc .masthead .eyebrow {
+    display: flex; align-items: center; gap: 7px;
+    font-size: 22px; font-weight: 700; letter-spacing: 3px; color: var(--ink-2);
+  }
+.content-calc .masthead .eyebrow i {
+    display: inline-block; width: 16px; font-size: 0;
+    border-top: 4px solid var(--amber); border-radius: 2px;
+  }
+.content-calc .masthead .value { margin-top: 3px; display: flex; align-items: baseline; gap: 6px; }
+.content-calc .masthead .value .num {
+    font-size: 84px; font-weight: 800; line-height: 1.05; letter-spacing: -1px;
+    color: var(--ink); font-variant-numeric: tabular-nums;
+  }
+.content-calc .masthead .value .unit { font-size: 34px; font-weight: 600; color: var(--ink-2); }
+.content-calc .masthead .rule { margin-top: 10px; border-top: 2px solid var(--ink); }
+.content-calc .masthead .subline {
+    margin-top: 9px; font-size: 22px; font-weight: 600; letter-spacing: .5px;
+    color: var(--ink-2); font-variant-numeric: tabular-nums;
+  }
+.content-calc .card {
+    background: var(--panel); border: 1px solid var(--panel-bd); border-radius: 13px;
+    padding: 13px 17px;
+  }
+.content-calc .card h3 {
+    display: flex; align-items: baseline;
+    font-size: 25px; font-weight: 800; letter-spacing: 1px; color: var(--ink);
+    padding-bottom: 7px; margin-bottom: 2px;
+    border-bottom: 2px solid var(--ink);
+  }
+.content-calc .card h3 .hint { font-size: 20px; font-weight: 500; color: var(--ink-3); margin-left: 6px; }
+.content-calc .card .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 9px 0; border-bottom: 1px solid var(--hair);
+  }
+.content-calc .card .row.nob { border-bottom: none; }
+.content-calc .card .row .name { font-size: 22px; font-weight: 500; color: var(--ink-2); }
+.content-calc .card .row .val { text-align: right; white-space: nowrap; }
+.content-calc .card .row .price {
+    font-size: 42px; font-weight: 800; color: var(--ink);
+    font-variant-numeric: tabular-nums; letter-spacing: -.5px;
+  }
+.content-calc .card .row .qty {
+    font-size: 39px; font-weight: 800; color: var(--ink);
+    font-variant-numeric: tabular-nums; letter-spacing: -.5px;
+  }
+.content-calc .card .row .unit { font-size: 20px; font-weight: 500; color: var(--ink-3); margin-left: 3px; }
+.content-calc .card .row .delta { font-size: 24px; font-weight: 700; margin-left: 7px;
+                      font-variant-numeric: tabular-nums; }
+.content-calc .card .formula {
+    margin-top: 10px;
+    background: var(--panel-2); border: 1px solid var(--panel-2-bd); border-radius: 10px;
+    padding: 10px 14px;
+    display: flex; align-items: baseline; justify-content: center; flex-wrap: wrap; gap: 7px;
+  }
+.content-calc .card .formula .term { font-size: 27px; font-weight: 700; color: var(--ink-2);
+                          font-variant-numeric: tabular-nums; }
+.content-calc .card .formula .op { font-size: 22px; font-weight: 700; color: var(--ink-3); align-self: center; }
+.content-calc .card .formula .eq { font-size: 22px; font-weight: 700; color: var(--ink-3); align-self: center; }
+.content-calc .card .formula .total { font-size: 36px; font-weight: 800; color: var(--amber);
+                          font-variant-numeric: tabular-nums; }
+.content-calc .card .notice {
+    margin-top: 9px; padding: 9px 12px; border-radius: 10px;
+    background: var(--advice-bg); border: 1px solid var(--advice-bd);
+    box-shadow: inset 0 1px 0 var(--advice-inset), 0 6px 16px -12px var(--advice-drop);
+    color: var(--advice-title); font-size: 20px; font-weight: 700; line-height: 1.55;
+  }
+.content-calc .up { color: var(--up); }
+.content-calc .down { color: var(--down); }
+.content-calc .flat { color: var(--flat); }
+
+
+.content-calc .basis { color:var(--ink-3); font-size:21px; margin-top:14px; line-height:1.6; }

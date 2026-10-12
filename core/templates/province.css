@@ -1,0 +1,108 @@
+/* 「我的油价」组件 · 画布 768 宽（v2.5.0 起，原 1080）。换算纪律同 report.css：
+   几何 ×0.711，字号只在 <20px 时抬到 20~21px 保底（大字 96px 价格牌 / 28px 建议标题不动）。
+   价格牌内可用宽 = 768 − 2×40(deck) − 2×21(plate) = 646，装得下 96px 的 4 位数 + 单位。 */
+.content-province {     --plate-mt: 14px;  --plate-pt: 16px; --plate-pb: 14px; --plate-px: 21px; --plate-radius: 14px;
+    --fs-plate-label: 26px; --fs-plate-price: 96px; --fs-plate-unit: 26px; --fs-plate-delta: 40px;
+    --metrics-mt: 11px; --metric-py: 10px; --metric-px: 21px; --metric-radius: 13px;
+    --fs-metric-label: 24px; --fs-metric-value: 30px; --fs-metric-unit: 20px; --fs-metric-note: 20px;
+    --advice-mt: 13px; --advice-pt: 14px; --advice-pb: 14px; --advice-px: 18px;
+    --advice-radius: 13px; --advice-ico: 46px; --advice-gap: 14px;
+    --fs-advice-title: 28px; --fs-advice-sub: 21px; --fs-advice-caveat: 20px; --fs-next:29px; }
+
+.content-province .plate {
+    margin-top: var(--plate-mt);
+    padding: var(--plate-pt) var(--plate-px) var(--plate-pb);
+    border-radius: var(--plate-radius);
+    border: 1px solid var(--plate-bd);
+    background: var(--plate-bg);
+    display: flex; flex-direction: column; align-items: center;
+  }
+.content-province .plate .pp-label {
+    font-size: var(--fs-plate-label); font-weight: 700; letter-spacing: 2px;
+    color: var(--ink-2);
+  }
+.content-province .plate .pp-line {
+    margin-top: 4px;
+    display: flex; align-items: baseline; gap: 12px;
+}
+.content-province .plate .pp-price {
+    font-size: var(--fs-plate-price); font-weight: 900; letter-spacing: -3px;
+    line-height: 1.02; color: var(--plate-ink);
+    font-variant-numeric: tabular-nums;
+  }
+.content-province .plate .pp-unit {
+    font-size: var(--fs-plate-unit); font-weight: 700; color: var(--ink-2);
+  }
+.content-province .plate .pp-delta {
+    font-size: var(--fs-plate-delta); font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+.content-province .plate .pp-date {
+    margin-top: 6px;
+    font-size: var(--fs-note); font-weight: 500; letter-spacing: .5px;
+    color: var(--ink-3); font-variant-numeric: tabular-nums;
+  }
+.content-province .metrics {
+    margin-top: var(--metrics-mt);
+    padding: 2px var(--metric-px);
+    border-radius: var(--metric-radius);
+    background: var(--panel);
+    border: 1px solid var(--panel-bd);
+  }
+.content-province .metric {
+    display: flex; justify-content: space-between; align-items: center; gap: 16px;
+    padding: var(--metric-py) 0;
+    border-bottom: 1px solid var(--hair);
+  }
+.content-province .metric:last-child { border-bottom: none; }
+.content-province .metric .name {
+    flex: 0 0 auto;
+    font-size: var(--fs-metric-label); font-weight: 600; color: var(--ink-2);
+  }
+.content-province .metric .right { flex: 1; text-align: right; }
+.content-province .metric .value {
+    font-size: var(--fs-metric-value); font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+.content-province .metric .unit { margin-left: 4px; font-size: var(--fs-metric-unit); color: var(--ink-3); }
+.content-province .metric .note { margin-top: 3px; font-size: var(--fs-metric-note); color: var(--amber); }
+.content-province .up { color: var(--up); }
+.content-province .down { color: var(--down); }
+.content-province .flat { color: var(--flat); }
+.content-province .empty {
+    margin-top: var(--plate-mt);
+    padding: 24px 20px; border-radius: var(--plate-radius);
+    background: var(--panel); border: 1px dashed var(--panel-bd);
+    text-align: center; color: var(--ink-3); font-size: 22px; line-height: 1.7;
+  }
+.content-province .advice {
+    margin-top: var(--advice-mt);
+    padding: var(--advice-pt) var(--advice-px) var(--advice-pb);
+    border-radius: var(--advice-radius);
+    border: 1px solid var(--advice-bd);
+    background: var(--advice-bg);
+    box-shadow: inset 0 1px 0 var(--advice-inset), 0 4px 14px var(--advice-drop);
+    display: flex; align-items: center; gap: var(--advice-gap);
+  }
+.content-province .advice .advice-ico {
+    flex: 0 0 auto;
+    width: var(--advice-ico); height: var(--advice-ico); border-radius: 50%;
+    background: var(--advice-ico-bg); color: var(--advice-ico-fg);
+    display: flex; align-items: center; justify-content: center;
+  }
+.content-province .advice .advice-ico svg { width: 55%; height: 55%; }
+.content-province .advice .advice-body { flex: 1; display: flex; flex-direction: column; gap: 5px; }
+.content-province .advice .advice-title {
+    font-size: var(--fs-advice-title); font-weight: 800; color: var(--advice-title);
+  }
+.content-province .advice .advice-evidence {
+    font-size: var(--fs-advice-sub); line-height: 1.45; color: var(--advice-sub);
+  }
+.content-province .advice .advice-trend {
+    font-size: var(--fs-advice-sub); line-height: 1.45; font-weight: 700;
+    color: var(--advice-sub); font-variant-numeric: tabular-nums;
+}
+.content-province .advice .advice-caveat {
+    font-size: var(--fs-advice-caveat); line-height: 1.4; color: var(--advice-sub);
+    opacity: .82;
+}

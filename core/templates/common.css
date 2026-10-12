@@ -1,0 +1,140 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 768px; background: #0e1219; }
+  body {
+    font-family: "Microsoft YaHei", "微软雅黑", "Noto Sans SC", "PingFang SC", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+
+/* 画布宽度 768（v2.5.0 起，原 1080）：图片在聊天里按屏宽缩放，手机有效宽约 375px。
+   1080 宽 → 缩放 0.35×，小字只剩 6~7px；768 宽 → 0.49×，同样字号在手机上大 1.4 倍。
+   ⚠️ 关键纪律：改画布**不能**把字号一起等比缩小 0.71 —— 那样图片虽小，
+   手机观感与改前完全一致，等于没改。字号策略是「大字保值 / 小字抬到 ≥20px」。
+   hero 高度随宽度同比（500→380），aspect 2.02 与改前 2.16 接近，底图裁切构图不变。 */
+#poster { position:relative; width:768px; display:flex; flex-direction:column; --hero-h:380px; --fs-eyebrow:22px; --fs-title:76px; --fs-sub:26px; --fs-note:22px; --fs-disc:21px; }
+#poster[data-deck="light"] {
+  --deck-bg: #f6f4f0;
+  --deck-grad: linear-gradient(180deg, #f8f6f3 0%, #f4f1ec 100%);
+  --panel: #ffffff;
+  --panel-bd: #e7e4dd;
+  --panel-2: #f0ece5;
+  --panel-2-bd: #e5e1d9;
+  --ink: #15181d;
+  --ink-2: #474d57;
+  --ink-3: #62686f;
+  --hair: #e7e4dd;
+  --up: #d93025;
+  --down: #188038;
+  --flat: #6b7078;
+  --amber: #8a5200;
+  --plate-bg: linear-gradient(180deg, #eef3fd 0%, #e3ebfa 100%);
+  --plate-bd: #d2dff4;
+  --plate-ink: #123a6b;
+  --advice-bg: linear-gradient(180deg, #fdf4e2 0%, #f4e4c6 100%);
+  --advice-bd: #e7d4aa;
+  --advice-inset: rgba(255,255,255,.85);
+  --advice-drop: rgba(120,72,0,.55);
+  --advice-ico-bg: #ffffff;
+  --advice-ico-fg: #8a5200;
+  --advice-title: #5c3a00;
+  --advice-sub: #7a5a20;
+}
+#poster[data-deck="dark"] {
+  --deck-bg: #0b1220;
+  --deck-grad: linear-gradient(180deg, #0a101b 0%, #101a2b 34%, #0d1526 68%, #080d16 100%);
+  --panel: #1a2334;
+  --panel-bd: #2c374b;
+  --panel-2: #141c2a;
+  --panel-2-bd: #232e40;
+  --ink: #eef1f7;
+  --ink-2: #a8b1c0;
+  --ink-3: #8d96a6;
+  --hair: #283244;
+  --up: #ff7a6b;
+  --down: #45dc95;
+  --flat: #8d96a6;
+  --amber: #ffd07a;
+  --plate-bg: linear-gradient(180deg, rgba(120,170,255,.14) 0%, rgba(120,170,255,.05) 100%);
+  --plate-bd: rgba(120,170,255,.30);
+  --plate-ink: #dbe8ff;
+  --advice-bg: linear-gradient(180deg, rgba(255,208,122,.15) 0%, rgba(255,208,122,.05) 100%);
+  --advice-bd: rgba(255,208,122,.34);
+  --advice-inset: rgba(255,255,255,.10);
+  --advice-drop: rgba(0,0,0,.45);
+  --advice-ico-bg: rgba(255,208,122,.16);
+  --advice-ico-fg: #ffd07a;
+  --advice-title: #f6d9a0;
+  --advice-sub: #c9b489;
+}
+  .hero { position: relative; height: var(--hero-h); overflow: hidden; background: #2a3138; }
+  .hero .hero-bg {
+    position: absolute; inset: 0;
+    background-image: url("{{ bg_data_uri }}");
+    background-size: cover;
+    background-position: center 62%;
+  }
+  /* 上缘压暗供 eyebrow 落位，下缘压暗供标题落位；中段几乎不动照片 */
+  .hero .hero-scrim {
+    position: absolute; inset: 0;
+    background: linear-gradient(180deg,
+      rgba(8,11,18,.50) 0%, rgba(8,11,18,.16) 20%,
+      rgba(8,11,18,.07) 42%, rgba(8,11,18,.24) 66%,
+      rgba(8,11,18,.86) 100%);
+  }
+  .hero .hero-top {
+    position: absolute; left: 0; right: 0; top: 0;
+    padding: 32px 40px 0;
+  }
+  .hero .hero-inner {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    padding: 0 40px 32px;
+  }
+  .hero .eyebrow {
+    display: flex; align-items: center; gap: 9px;
+    font-size: var(--fs-eyebrow); font-weight: 600; letter-spacing: 8px;
+    color: rgba(255,255,255,.92); text-shadow: 0 2px 14px rgba(0,0,0,.65);
+  }
+  .hero .eyebrow::before {
+    content: ""; width: 20px; height: 4px; border-radius: 2px; background: #ffd479;
+  }
+  .hero .title {
+    margin-top: 10px;
+    font-size: var(--fs-title); font-weight: 800; letter-spacing: 4px; line-height: 1.08;
+    color: #fff; text-shadow: 0 4px 26px rgba(0,0,0,.60);
+  }
+  /* 副标题 = 纯文字一行（省份 · 日期），必须没有任何背景/边框/内边距 ——
+     曾经把卡片区样式漏到这里凭空长出"底框"，前车之鉴。 */
+  .hero .sub {
+    margin-top: 9px;
+    font-size: var(--fs-sub); font-weight: 600; letter-spacing: .5px;
+    color: rgba(255,255,255,.92); text-shadow: 0 2px 14px rgba(0,0,0,.60);
+  }
+
+  /* ================= DECK：实底数据台 ================= */
+  .deck {
+    position: relative; z-index: 2;
+    padding: 28px 40px 32px;
+    background-color: var(--deck-bg);
+    background-image: var(--deck-grad);
+    display: flex; flex-direction: column;
+  }
+
+  .note {
+    font-size: var(--fs-note); line-height: 1.5; letter-spacing: .2px;
+    color: var(--ink-3);
+  }
+
+
+.source-footer { padding: 0 40px 28px; background:var(--deck-bg); color:var(--ink-3); }
+.source-footer .disc { border-top:1px solid var(--hair); padding-top:13px; font-size:21px; line-height:1.6; }
+.hero .title { overflow-wrap:anywhere; }
+
+.section-title { font-size:30px; color:var(--ink); margin-bottom:6px; }
+.context { font-size:22px; color:var(--ink-2); margin-bottom:13px; overflow-wrap:anywhere; }
+
+.source-footer .next { display:flex; align-items:center; gap:9px; padding-bottom:16px; font-size:29px; line-height:34px; font-weight:800; letter-spacing:1px; color:var(--ink); }
+.source-footer .next b, .source-footer .next-ico { color:var(--amber); }
+.source-footer .next[data-status="missing"], .source-footer .next[data-status="expired"] { font-size:23px; }
+/* 数据时效说明：展示的挂牌价不是今天时出现（凌晨上游还没出当日价的情形）。 */
+.source-footer .stale { display:flex; align-items:center; gap:8px; padding-bottom:13px; font-size:21px; line-height:1.5; font-weight:600; color:var(--amber); }
+.source-footer .stale::before { content:""; flex:0 0 auto; width:13px; height:13px; border-radius:50%; border:3px solid var(--amber); }

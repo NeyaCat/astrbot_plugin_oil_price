@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>全国油价设置</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="wrap">
+      <header class="topbar">
+        <div>
+          <h1>全国油价</h1>
+          <p class="sub">播报地区 · 初始化全国 · 每日 07:05 抓取 · 出图推送 · 白名单 · HTTP 取图接口</p>
+        </div>
+        <span id="conn" class="tag">连接中…</span>
+      </header>
+
+      <section class="card">
+        <h2>数据源</h2>
+        <p class="hint">
+          每日抓取固定走「<b>ShowAPI 优先，失败自动降级东方财富</b>」—— 这是唯一合理的
+          组合，不再提供切换：ShowAPI 覆盖 31 省全标号，东方财富无鉴权、无额度限制，
+          两者互为备份。<b>历史初始化固定直连东方财富、覆盖全国 31 省</b>（无需 appKey）。
+        </p>
+        <div class="form">
+          <label class="field">
+            <span>ShowAPI appKey（唯一鉴权方式）</span>
+            <input id="app_key" type="password" placeholder="粘贴万维易源控制台里的 appKey" />
+            <small class="muted">
+              还没有 appKey？先到
+              <a href="https://www.showapi.com/" target="_blank" rel="noreferrer">showapi.com（万维易源）</a>
+              注册，登录后在「控制台 → 我的应用」创建应用即可看到。
+            </small>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>播报设置</h2>
+        <p class="hint">
+          「播报地区」只决定 <b>/今日油价</b>、每日定时推送与 HTTP <b>type=report</b>
+          出图时展示哪些省。<b>它不限制数据范围</b>：历史初始化与每日抓取都覆盖全国 31 省，
+          个人功能（/看看油价、/我要加油）查任意省、缺当日数据时自动补一次。
+        </p>
+        <div class="form">
+          <div class="field">
+            <span>播报地区 · 今日油价推送（多选下拉）</span>
+            <div id="provinces" class="multi" data-placeholder="选择省份…"></div>
+          </div>
+          <div class="field">
+            <span>最低价分析标号（多选下拉）</span>
+            <div id="grades" class="multi" data-placeholder="选择标号…"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>推送与白名单</h2>
+        <p class="hint">
+          白名单决定<b>每日定时推送发给谁</b>；填写在此的会话才会收到推送（指令不受限制）。
+          <b>两项都为空时不推送</b>。机器人名 = 平台配置里的 ID（不是显示名称），
+          也可让管理员在目标会话里发送 <b>/油价订阅</b> 自动加入当前会话。
+        </p>
+        <div class="form">
+          <label class="check">
+            <input id="enable_push" type="checkbox" />
+            <span>开启每日定时推送</span>
+          </label>
+          <label class="field">
+            <span>推送时间（HH:MM，按 AstrBot 全局时区）</span>
+            <input id="push_time" placeholder="07:05" />
+          </label>
+          <label class="check">
+            <input id="push_on_adjust" type="checkbox" />
+            <span>调价日额外推送涨跌提醒</span>
+          </label>
+          <label class="field">
+            <span>推送白名单 · 私聊（每行 机器人名:QQ号）</span>
+            <textarea id="push_users" rows="3" placeholder="例如：default:10001"></textarea>
+          </label>
+          <label class="field">
+            <span>推送白名单 · 群（每行 机器人名:QQ群号）</span>
+            <textarea id="push_groups" rows="3" placeholder="例如：default:987654321"></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>HTTP 取图接口</h2>
+        <p class="hint">
+          额外监听一个独立端口，直接返回<b>图片二进制</b>，方便脚本 / 面板 / 壁纸工具调用。
+          <b>该接口不走白名单过滤</b>：只要开启并知道地址，任何人都能调取，
+          请仅在可信网络内使用（或把监听地址改为 <b>127.0.0.1</b>）。
+        </p>
+        <div class="form">
+          <label class="check">
+            <input id="http_api_enable" type="checkbox" />
+            <span>开启 HTTP 取图接口</span>
+          </label>
+          <label class="field">
+            <span>监听地址</span>
+            <input id="http_api_host" placeholder="0.0.0.0" />
+          </label>
+          <label class="field">
+            <span>端口</span>
+            <input id="http_api_port" type="number" min="1" max="65535" placeholder="9852" />
+          </label>
+        </div>
+        <p class="hint">
+          接口一览（<span id="http-state" class="tag">未开启</span>）：
+        </p>
+        <pre id="http-doc" class="log"></pre>
+        <div class="actions">
+          <a id="http-link" class="ghost" href="#" target="_blank" rel="noreferrer">打开示例图片</a>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>显示</h2>
+        <div class="form">
+          <label class="field">
+            <span>图片标题名称</span>
+            <input id="display_name" maxlength="40" placeholder="今日油价" />
+            <small class="muted">三种图片共用此页头标题，最多 40 个字符。</small>
+          </label>
+          <div class="field">
+            <span>调价日基准省份</span>
+            <select id="adjust_ref_province"></select>
+            <small id="ref-hint" class="muted"></small>
+          </div>
+          <div class="field">
+            <span>图片主题（自动）</span>
+            <div id="theme-badge" class="readout">读取中…</div>
+          </div>
+        </div>
+        <div class="header-settings">
+          <h3>图片页头背景</h3>
+          <p class="hint">三种图片共用，默认为雪山。选择 JPEG、PNG 或 WebP（不超过 10 MB），上传后立即生效；建议使用横向图片，居中裁切展示。</p>
+          <img id="header-preview" class="header-preview" alt="当前页头背景" />
+          <p id="header-state" class="muted">读取背景中…</p>
+          <label class="field"><span>选择背景图片</span><input id="header-file" type="file" accept="image/jpeg,image/png,image/webp" /></label>
+          <div class="actions">
+            <button id="btn-header-upload" type="button">上传并应用</button>
+            <button id="btn-header-reset" type="button" class="ghost">恢复默认雪山</button>
+          </div>
+        </div>
+        <p class="hint">
+          图片主题<b>不再提供手动选项</b>：按<b>北京时间</b>的每日晨昏点自动切换 ——
+          日出到日落之间出浅色（暖白数据台），其余时间出深色（墨蓝夜间版）。
+          晨昏点按北京经纬度实时计算（夏至约 04:47 / 19:47，冬至约 07:33 / 16:53），
+          不写死 6:00 / 18:00。
+        </p>
+      </section>
+
+      <div class="actions">
+        <button id="btn-save" class="primary">保存配置</button>
+        <button id="btn-init">初始化全国历史数据</button>
+        <button id="btn-init-force" class="ghost">重新初始化（覆盖已有数据）</button>
+        <button id="btn-refresh" class="ghost">拉取今日</button>
+        <button id="btn-preview" class="ghost">预览图片</button>
+      </div>
+
+      <section class="card">
+        <h2>初始化进度</h2>
+        <p class="hint">
+          打开本页就会自动刷新进度（运行中每秒一次，空闲时每 4 秒一次），
+          <b>不需要停留在点击初始化的那个页面</b>；从聊天里发起的初始化在这里同样看得到。
+        </p>
+        <div class="bar"><div id="bar-fill" class="bar-fill"></div></div>
+        <div class="progress-meta">
+          <span id="step">空闲</span>
+          <span id="dbstat" class="muted"></span>
+          <span id="pct">0%</span>
+        </div>
+        <pre id="log" class="log"></pre>
+      </section>
+
+      <section class="card">
+        <h2>图片预览</h2>
+        <div id="preview" class="preview">
+          <span class="muted">点击「预览图片」生成</span>
+        </div>
+      </section>
+
+      <div id="toast" class="toast"></div>
+    </div>
+    <script type="module" src="./app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,41 @@
+<h1 class="section-title">加油计算</h1><p class="context">{{ calc.generated_at }}</p>
+  <div class="masthead">
+    <div class="eyebrow"><i></i>{{ calc.out_label }}</div>
+    <div class="value">
+      <span class="num">{{ calc.out_text }}</span>
+      <span class="unit">{{ calc.out_unit }}</span>
+    </div>
+    <div class="rule"></div>
+    <div class="subline">{{ calc.subline }}</div>
+  </div>
+
+  <div class="card">
+    <h3>计算明细<span class="hint">（涨跌为较上次调价）</span></h3>
+
+    <div class="row">
+      <span class="name">今日单价 · {{ calc.province }} {{ calc.grade_text }}</span>
+      <span class="val">
+        <span class="price {{ calc.cls }}">{{ calc.price_text }}</span><span class="unit">元/升</span>
+        <span class="delta {{ calc.cls }}">{{ calc.arrow }} {{ calc.delta_text }}</span>
+      </span>
+    </div>
+
+    <div class="row nob">
+      <span class="name">{{ calc.input_label }}</span>
+      <span class="val"><span class="qty">{{ calc.input_text }}</span></span>
+    </div>
+
+    <div class="formula">
+      <span class="term">{{ calc.formula_left }}</span>
+      <span class="op">{{ calc.formula_op }}</span>
+      <span class="term">{{ calc.formula_mid }}</span>
+      <span class="eq">=</span>
+      <span class="total">{{ calc.formula_right }}</span>
+    </div>
+
+    {% if not calc.is_today %}
+    <div class="notice">{{ calc.date_note }}</div>
+    {% endif %}
+  </div>
+
+<p class="basis">价格日期：{{ calc.price_date }}{% if not calc.is_today %}（非今日）{% endif %}<br>{{ calc.basis_text }}</p>

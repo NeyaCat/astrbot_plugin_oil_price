@@ -1,0 +1,8 @@
+# 换行统一为 LF（无 BOM）。
+#
+# 两个仓都开着 core.autocrlf=true，光把工作区文件转成 LF 是「隐形」的：
+# git 认为没有改动，下次 checkout/restore 又会按 autocrlf 写回 CRLF。
+# 这里显式钉死 eol=lf，工作区才会一直是 LF，打包出来的插件也是 LF。
+#   text=auto —— 由 git 判断是否文本（二进制文件不会被动）
+#   eol=lf    —— 文本文件在工作区一律用 LF
+* text=auto eol=lf

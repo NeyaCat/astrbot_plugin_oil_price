@@ -8,7 +8,7 @@ desc: |
   - 历史一键初始化、每日定时抓取、缺当日数据自动补一次；`/油价设置` 记住常用地区与油号
   - 推送白名单 · 白天浅色 / 夜间深色自动切换 · 可选 HTTP 取图接口与网页查询界面
 
-version: 2.9.2
+version: 2.9.3
 author: NeyaCat # 插件作者（市场 plugin_id = 作者/插件名）
 repo: https://github.com/NeyaCat/astrbot_plugin_oil_price # 插件仓库地址
 astrbot_version: ">=4.9.2" # 依赖 KV 存储与 html_render

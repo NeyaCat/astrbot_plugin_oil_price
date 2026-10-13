@@ -159,7 +159,7 @@ def _data_root(plugin_name: str) -> Path:
     PLUGIN_NAME,
     "NeyaCat",
     "全国油价查询与计算（整体播报图 / 单省单号图 / 加油计算 / 常用地区与油号记忆 / 定时推送 / HTTP 取图接口）",
-    "2.9.2",
+    "2.9.3",
 )
 class OilPricePlugin(Star):
     def __init__(self, context: Context, config: AstrBotConfig):
@@ -175,6 +175,10 @@ class OilPricePlugin(Star):
         self._init_task: asyncio.Task | None = None
         self._init_notify: set[str] = set()  # 初始化完成后要通知的会话（可多人）
         self._initializer: HistoryInitializer | None = None
+        # 全新部署自举开关：空库且从未初始化过时，启动即自动跑一次历史初始化
+        # （见 :meth:`_bootstrap_if_fresh`）。桩测试把它置 False —— 单元测试
+        # 不该真去连东方财富。
+        self.auto_history_init = True
         self._tz_cache: tzinfo | None = None
         self._http = oil_http.OilHttpServer(self)
         self._http_restart_task: asyncio.Task | None = None
@@ -414,6 +418,7 @@ class OilPricePlugin(Star):
             )
 
         await self._start_http_server()
+        await self._bootstrap_if_fresh()
 
     async def terminate(self) -> None:
         self._stop.set()
@@ -1274,6 +1279,44 @@ class OilPricePlugin(Star):
     # ------------------------------------------------------------------ #
     # 历史初始化
     # ------------------------------------------------------------------ #
+    async def _bootstrap_if_fresh(self) -> None:
+        """全新部署（空库 + 从未成功初始化过）时，自动跑一次历史初始化。
+
+        v2.9.3 起。此前 :meth:`initialize` 只建表 + 挂定时任务，而定时任务要等到
+        ``push_time``（默认 07:05）才第一次抓取；历史初始化更是只能靠管理员
+        ``/油价初始化`` 或设置页按钮手动触发。于是下午装好的全新实例
+        ``price_daily`` 里一条数据都没有，``/今日油价``、``/看看油价``、
+        ``/我要加油`` 全被 :meth:`_data_not_ready` 拦下回「暂无可用油价数据」，
+        干等到次日 07:05 才算能用 —— 装完当天几乎不可用。这里补上「开箱即用」。
+
+        **只在两个条件同时成立时才跑**（只认全新部署，不打扰既有用户）：
+
+        1. ``price_daily`` 是空的 —— 有数据就说明早就初始化过或每日抓取跑过；
+        2. ``history_last_run`` 没有值 —— 只认「从未成功初始化过」。
+
+        单用条件 ① 不够：上游偶发返回空列表时初始化会「成功但写入 0 条」，
+        那样每次重启都会重跑一遍全量拉取。两个条件配合后，首次失败仍会在
+        下次启动自动重试（自愈），一旦成功便永不自动重跑 —— 想重跑就走
+        ``/油价初始化`` 或设置页的「重新初始化」。
+
+        与 ``/油价初始化`` 共用同一条后台任务（:meth:`_start_history_init`），
+        所以进度照常在设置页可见。启动时没有会话上下文，故不发回执 ——
+        失败原因只进日志与控制台。整个判断都包在 try 里：自举失败绝不能
+        拖垮插件启动，最坏也只是退回「手动点按钮」的老行为。
+        """
+        if not self.auto_history_init:
+            return
+        try:
+            if await self.db.count_prices():
+                return
+            if await self.db.get_meta("history_last_run"):
+                return
+        except Exception as exc:  # noqa: BLE001 - 判断失败就当不需要自举
+            logger.warning("[oil_price] 检查是否需要首次初始化失败（跳过自举）：%s", exc)
+            return
+        message = self._start_history_init(force=False)
+        logger.info("[oil_price] 检测到全新部署（空库且从未初始化），已自动启动历史初始化：%s", message)
+
     def _start_history_init(self, *, force: bool = False, notify_umo: str | None = None) -> str:
         """启动后台初始化。
 
